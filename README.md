@@ -26,7 +26,6 @@ Utilizes [The Apple Wiki](https://theapplewiki.com) as a source.
 
 ## TODO
 - Write documentation
-- Add a CLI tool
 - Push to PyPI
 
 ## Support
