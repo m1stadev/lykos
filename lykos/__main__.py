@@ -6,8 +6,6 @@ from loguru import logger
 
 import lykos
 
-RELEASE_API = 'https://api.ipsw.me/v4/device'
-BETA_API = 'https://api.m1sta.xyz/betas'
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
