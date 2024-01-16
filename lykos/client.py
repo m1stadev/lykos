@@ -7,11 +7,10 @@ from requests import Session
 from .errors import PageNotFound
 from .types import Component
 
-HEADERS = {
-    'User-Agent': f'lykos/{version(__package__)}'
-}
+HEADERS = {'User-Agent': f'lykos/{version(__package__)}'}
 
 BASE_URL = 'https://theapplewiki.com'
+
 
 class Client:
     def __init__(self) -> None:
@@ -30,10 +29,12 @@ class Client:
         }
 
         logger.debug(f'Finding page title from search: "{search}"')
-        data = self._session.get(BASE_URL + '/api.php', headers=HEADERS, params=params).json()
+        data = self._session.get(
+            BASE_URL + '/api.php', headers=HEADERS, params=params
+        ).json()
         if data['query']['searchinfo']['totalhits'] == 0:
             raise PageNotFound(f'No pages found from search: "{search}"')
-        
+
         return data['query']['search'][0]['title']
 
     def _fetch_key_data(self, title: str) -> dict:
@@ -46,11 +47,13 @@ class Client:
             'action': 'ask',
             'format': 'json',
             'query': ask_query,
-            'api_version': 2
+            'api_version': 2,
         }
 
         logger.debug(f'Fetching key data from title: "{title}"')
-        data = self._session.get(BASE_URL + '/api.php', headers=HEADERS, params=params).json()
+        data = self._session.get(
+            BASE_URL + '/api.php', headers=HEADERS, params=params
+        ).json()
         if len(data['query']['results']) == 0:
             raise PageNotFound(f'No wiki pages found from title: "{title}"')
 
@@ -76,13 +79,18 @@ class Client:
             logger.debug(f'Found component: {component}')
             components.append(component)
 
-        logger.debug(f"Found {len(components)} component{'s' if len(components) != 1 else ''}")
+        logger.debug(
+            f"Found {len(components)} component{'s' if len(components) != 1 else ''}"
+        )
         return components
 
-
-    def get_key_data(self, device: str, buildid: str, codename: Optional[str]=None) -> List[Component]:
+    def get_key_data(
+        self, device: str, buildid: str, codename: Optional[str] = None
+    ) -> List[Component]:
         if codename:
-            logger.info(f'Fetching key data for device: {device}, buildid:{buildid}, codename:{codename}')
+            logger.info(
+                f'Fetching key data for device: {device}, buildid:{buildid}, codename:{codename}'
+            )
             title = f'Keys:{codename} {buildid} ({device})'
         else:
             logger.info(f'Fetching key data for device: {device}, buildid:{buildid}')
@@ -90,4 +98,3 @@ class Client:
 
         key_data = self._fetch_key_data(title=title)
         return self._parse_key_data(data=key_data)
-
