@@ -14,7 +14,7 @@ lykos
 </p>
 A Python library for fetching *OS keybags.
 
-Based on bindings from [Asahi Linux](https://github.com/AsahiLinux/asahi-installer/blob/8bbbb8ca5a347d99b243e10f24358573f1587df0/asahi_firmware/img4.py#L17-L27).
+Utilizes [The Apple Wiki](https://theapplewiki.com) as a source.
 
 ## Requirements
 - Python 3.8 or higher
