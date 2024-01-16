@@ -79,7 +79,7 @@ def main(
         data = client.get_key_data(device=device, buildid=buildid, codename=codename)
     except lykos.PageNotFound:
         raise click.ClickException(
-            f'Failed to fetch keys for ({device},{' ' if codename is None else ' ' + codename + ' '}{buildid}).'
+            f"Failed to fetch keys for ({device},{' ' if codename is None else ' ' + codename + ' '}{buildid})."
         )
     if component:
         try:
