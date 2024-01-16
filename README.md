@@ -12,9 +12,25 @@ lykos
     <image src="https://img.shields.io/github/stars/m1stadev/lykos">
   </a>
 </p>
-A Python library for fetching *OS keybags.
+A Python library/CLI tool for fetching *OS firmware keys.
 
 Utilizes [The Apple Wiki](https://theapplewiki.com) as a source.
+
+## Usage
+```
+Usage: lykos [OPTIONS]
+
+  A Python CLI tool for fetching *OS firmware keys.
+
+Options:
+  --version                     Show the version and exit.
+  -d, --device-identifier TEXT  Device identifier.  [required]
+  -b, --build-id TEXT           *OS buildid.  [required]
+  -c, --codename TEXT           *OS codename.
+  -n, --component TEXT          Component to print keys for.
+  -v, --verbose                 Enable verbose logging.
+  -h, --help                    Show this message and exit.
+```
 
 ## Requirements
 - Python 3.8 or higher
