@@ -56,7 +56,7 @@ def main(
     codename: Optional[str] = None,
     component: Optional[str] = None,
 ) -> None:
-    """A Python CLI tool for decrypting iOS/iPadOS bootchain firmware keys."""
+    """A Python CLI tool for fetching *OS firmware keys."""
 
     if verbose:
         logger.remove()
@@ -75,19 +75,34 @@ def main(
         f"Searching for{' ' if component is None else ' ' + component + ' '}keys for ({device},{' ' if codename is None else ' ' + codename + ' '}{buildid})..."
     )
 
-    data = client.get_key_data(device=device, buildid=buildid, codename=codename)
+    try:
+        data = client.get_key_data(device=device, buildid=buildid, codename=codename)
+    except lykos.PageNotFound:
+        raise click.ClickException(
+            f'Failed to fetch keys for ({device},{' ' if codename is None else ' ' + codename + ' '}{buildid}).'
+        )
     if component:
-        data = [c for c in data if c.name.casefold() == component.casefold()]
-        if len(data) == 0:
-            raise click.ClickException(f'No keys found for component {component}.')
+        try:
+            component = next(
+                c for c in data if c.name.casefold() == component.casefold()
+            )
+        except StopIteration:
+            raise click.ClickException(
+                f"No keys found for component {component} (available keys: {', '.join(c.name for c in data)})."
+            )
 
-    for comp in data:
-        click.echo(f'Component: {comp.name}')
-        click.echo(f'Key: {comp.key.hex()}')
-        click.echo(f'IV: {comp.iv.hex()}')
+        click.echo(f'Component: {component.name}')
+        click.echo(f'Key: {component.key.hex()}')
+        click.echo(f'IV: {component.iv.hex()}')
 
-        if data.index(comp) != len(data) - 1:
-            click.echo()
+    else:
+        for comp in data:
+            click.echo(f'Component: {comp.name}')
+            click.echo(f'Key: {comp.key.hex()}')
+            click.echo(f'IV: {comp.iv.hex()}')
+
+            if comp != data[-1]:
+                click.echo()
 
 
 if __name__ == '__main__':

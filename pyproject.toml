@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "lykos"
 version = "0.1"
-description = "A library for fetching *OS keybags."
+description = "A Python library/CLI tool for fetching *OS firmware keys."
 authors = ["m1stadev <adamhamdi31@gmail.com>"]
 license = "MIT"
 readme = "README.md"
