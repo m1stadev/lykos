@@ -1,5 +1,5 @@
 from importlib.metadata import version
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from loguru import logger
 from requests import Session
@@ -15,6 +15,37 @@ BASE_URL = 'https://theapplewiki.com'
 class Client:
     def __init__(self) -> None:
         self._session = Session()
+        self.components = self._get_component_names()
+
+    def _get_component_names(self) -> Tuple[str]:
+        params = {
+            'action': 'templatedata',
+            'format': 'json',
+            # Tenmplate:Keys
+            'pageids': '1814',
+        }
+
+        logger.debug('Fetching component names')
+        data = self._session.get(
+            BASE_URL + '/api.php', headers=HEADERS, params=params
+        ).json()
+
+        components = []
+        for k in data['pages']['1814']['paramOrder']:
+            # Skip all '*IV', '*Key', and '*KBAG' keys
+            if any(k.endswith(kk) for kk in ('Key', 'IV', 'KBAG')):
+                continue
+
+            if any(
+                (k + kk) in data['pages']['1814']['paramOrder']
+                for kk in ('Key', 'IV', 'KBAG')
+            ):
+                components.append(k)
+
+        logger.debug(
+            f"Found {len(components)} component{'s' if len(components) != 1 else ''}: {', '.join(components)}"
+        )
+        return tuple(components)
 
     def _find_page_title(self, search: str) -> str:
         params = {
@@ -61,7 +92,20 @@ class Client:
     def _parse_key_data(self, data: dict) -> List[Component]:
         components = []
         for key, value in data['query']['results'].items():
-            name = key.split('#')[-1]
+            id_ = key.split('#')[-1]
+            logger.debug(f'Finding component name from ID: {id_}')
+
+            for n in self.components:
+                logger.debug(f'Comparing: {n.casefold()} == {id_.casefold()}')
+                if n.casefold() == id_.casefold():
+                    name = n
+                    logger.debug(f'Found component name: {name}')
+                    break
+            else:
+                logger.warning(
+                    f'No component name found for ID: {id_}, using ID instead'
+                )
+                name = id_
 
             if len(value['printouts']['iv']) == 0:
                 logger.debug(f'No IV found for component: {name}, skipping')
