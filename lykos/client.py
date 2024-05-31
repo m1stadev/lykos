@@ -67,12 +67,12 @@ class Client:
                 logger.debug(f'No IV found for component: {name}, skipping')
                 continue
 
-            if value['printouts']['iv'][0]['fulltext'] in ('Not Encrypted', 'Unknown'):
+            if value['printouts']['iv'][0] in ('Not Encrypted', 'Unknown'):
                 logger.debug(f'Component: {name} is not encrypted, skipping')
                 continue
 
-            key = bytes.fromhex(value['printouts']['key'][0]['fulltext'])
-            iv = bytes.fromhex(value['printouts']['iv'][0]['fulltext'])
+            key = bytes.fromhex(value['printouts']['key'][0])
+            iv = bytes.fromhex(value['printouts']['iv'][0])
 
             component = Component(name=name, key=key, iv=iv)
             logger.debug(f'Found component: {component}')
