@@ -1,11 +1,17 @@
 [tool.poetry]
 name = "lykos"
-version = "0.1"
+version = "0.0.0"
 description = "A Python library/CLI tool for fetching *OS firmware keys."
 authors = ["m1stadev <adamhamdi31@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/m1stadev/lykos"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "semver"
+dirty = true
 
 [tool.poetry.scripts]
 lykos = "lykos.__main__:main"
@@ -15,6 +21,9 @@ python = "^3.8"
 loguru = "^0.7.2"
 requests = "^2.31.0"
 click = "^8.1.7"
+
+[tool.ruff]
+target-version = "py38"
 
 [tool.ruff.lint]
 extend-select = ["I"]
@@ -26,5 +35,5 @@ quote-style = "single"
 "Bug Tracker" = "https://github.com/m1stadev/lykos/issues"
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
