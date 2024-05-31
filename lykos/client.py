@@ -21,8 +21,7 @@ class Client:
             'action': 'query',
             'format': 'json',
             'list': 'search',
-            'srsearch': search,
-            'srwhat': 'title',
+            'srsearch': f'intitle:{search}',
             # Keys namespace
             'srnamespace': 2304,
             'srlimit': 1,
