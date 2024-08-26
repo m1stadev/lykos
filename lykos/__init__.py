@@ -7,4 +7,4 @@ from .errors import *  # noqa: F403
 
 __version__ = version(__package__)
 
-_logger.disable('lykos')
+_logger.disable(__package__)

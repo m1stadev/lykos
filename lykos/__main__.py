@@ -63,16 +63,16 @@ def main(
         logger.add(
             sys.stderr,
             level='DEBUG',
-            format='[{time:MMM D YYYY - hh:mm:ss A zz}] {level} {module}:{line} {message}',
+            format='[{time:MMM D YYYY - hh:mm:ss A zz}] {level} | {module}:{function}:{line} {message}',
         )
-        logger.enable('lykos')
+        logger.enable(__package__)
     else:
         sys.tracebacklimit = 0
 
     client = lykos.Client()
 
     click.echo(
-        f"Searching for{' ' if component is None else ' ' + component + ' '}keys for ({device},{' ' if codename is None else ' ' + codename + ' '}{buildid})..."
+        f"Searching for{' ' if component is None else ' ' + component.lower() + ' '}keys for ({device},{' ' if codename is None else ' ' + codename + ' '}{buildid})..."
     )
 
     try:
@@ -88,16 +88,18 @@ def main(
             )
         except StopIteration:
             raise click.ClickException(
-                f"No keys found for component {component} (available keys: {', '.join(c.name for c in data)})."
+                f"No keys found for component {component.lower()} (available keys: {', '.join(c.name for c in data)})."
             )
 
         click.echo(f'Component: {component.name}')
+        click.echo(f'File: {component.filename}')
         click.echo(f'Key: {component.key.hex()}')
         click.echo(f'IV: {component.iv.hex()}')
 
     else:
         for comp in data:
             click.echo(f'Component: {comp.name}')
+            click.echo(f'File: {comp.filename}')
             click.echo(f'Key: {comp.key.hex()}')
             click.echo(f'IV: {comp.iv.hex()}')
 
