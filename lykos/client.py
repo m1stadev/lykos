@@ -115,10 +115,11 @@ class Client:
                 logger.debug(f'Component: {name} is not encrypted, skipping')
                 continue
 
+            filename = value['printouts']['filename'][0]
             key = bytes.fromhex(value['printouts']['key'][0])
             iv = bytes.fromhex(value['printouts']['iv'][0])
 
-            component = Component(name=name, key=key, iv=iv)
+            component = Component(name=name, filename=filename, key=key, iv=iv)
             logger.debug(f'Found component: {component}')
             components.append(component)
 
