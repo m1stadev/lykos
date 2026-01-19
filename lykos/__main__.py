@@ -72,14 +72,14 @@ def main(
     client = lykos.Client()
 
     click.echo(
-        f"Searching for{' ' if component is None else ' ' + component.lower() + ' '}keys for ({device},{' ' if codename is None else ' ' + codename + ' '}{buildid})..."
+        f'Searching for{" " if component is None else " " + component.lower() + " "}keys for ({device},{" " if codename is None else " " + codename + " "}{buildid})...'
     )
 
     try:
         data = client.get_key_data(device=device, buildid=buildid, codename=codename)
     except lykos.PageNotFound:
         raise click.ClickException(
-            f"Failed to fetch keys for ({device},{' ' if codename is None else ' ' + codename + ' '}{buildid})."
+            f'Failed to fetch keys for ({device},{" " if codename is None else " " + codename + " "}{buildid}).'
         )
     if component:
         try:
@@ -88,7 +88,7 @@ def main(
             )
         except StopIteration:
             raise click.ClickException(
-                f"No keys found for component {component.lower()} (available keys: {', '.join(c.name for c in data)})."
+                f'No keys found for component {component.lower()} (available keys: {", ".join(c.name for c in data)}).'
             )
 
         click.echo(f'Component: {component.name}')

@@ -43,7 +43,7 @@ class Client:
                 components.append(k)
 
         logger.debug(
-            f"Found {len(components)} component{'s' if len(components) != 1 else ''}: {', '.join(components)}"
+            f'Found {len(components)} component{"s" if len(components) != 1 else ""}: {", ".join(components)}'
         )
         return tuple(components)
 
@@ -124,7 +124,7 @@ class Client:
             components.append(component)
 
         logger.debug(
-            f"Found {len(components)} component{'s' if len(components) != 1 else ''}"
+            f'Found {len(components)} component{"s" if len(components) != 1 else ""}'
         )
         return components
 
