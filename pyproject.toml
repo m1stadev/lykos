@@ -1,39 +1,44 @@
-[tool.poetry]
+[project]
 name = "lykos"
-version = "0.0.0"
+dynamic = ["version"]
 description = "A Python library/CLI tool for fetching *OS firmware keys."
-authors = ["m1stadev <adamhamdi31@gmail.com>"]
-license = "MIT"
+authors = [
+    {name = "m1stadev", email = "adamhamdi31@gmail.com"}
+]
+license = {file = "LICENSE"}
 readme = "README.md"
-repository = "https://github.com/m1stadev/lykos"
+requires-python = ">=3.9"
+dependencies = [
+    "loguru>=0.7.2",
+    "requests>=2.32.3",
+    "click>=8.1.7"
+]
+
+[project.urls]
+Repository = "https://github.com/m1stadev/lykos"
+"Bug Tracker" = "https://github.com/m1stadev/lykos/issues"
+
+[project.scripts]
+lykos = "lykos.__main__:main"
+
+[build-system]
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
 
 [tool.poetry-dynamic-versioning]
-enable = true
 vcs = "git"
 style = "semver"
 dirty = true
 
-[tool.poetry.scripts]
-lykos = "lykos.__main__:main"
-
-[tool.poetry.dependencies]
-python = "^3.8"
-loguru = "^0.7.2"
-requests = "^2.32.3"
-click = "^8.1.7"
-
 [tool.ruff]
-target-version = "py38"
+target-version = "py39"
 
 [tool.ruff.lint]
 extend-select = ["I"]
+ignore = ["E722"]
 
 [tool.ruff.format]
 quote-style = "single"
-
-[tool.poetry.urls]
-"Bug Tracker" = "https://github.com/m1stadev/lykos/issues"
-
-[build-system]
-requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
-build-backend = "poetry_dynamic_versioning.backend"
