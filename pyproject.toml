@@ -7,11 +7,12 @@ authors = [
 ]
 license = {file = "LICENSE"}
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "loguru>=0.7.2",
-    "requests>=2.32.3",
-    "click>=8.1.7"
+    "aiohttp>=3.13.3",
+    "typer>=0.21.1",
+    "async-typer>=0.1.10",
 ]
 
 [dependency-groups]
@@ -46,4 +47,4 @@ extend-select = ["I"]
 ignore = ["E722"]
 
 [tool.ruff.format]
-quote-style = "single"
+quote-style = "preserve"

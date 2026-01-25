@@ -1,60 +1,47 @@
+import asyncio
 import sys
-from typing import Optional
+from typing import Annotated
 
-import click
+import typer
+from async_typer import AsyncTyper
 from loguru import logger
 
 import lykos
+from lykos import Client, __version__
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
-@click.command(context_settings=CONTEXT_SETTINGS)
-@click.version_option(message=f'lykos {lykos.__version__}')
-@click.option(
-    '-d',
-    '--device-identifier',
-    'device',
-    type=str,
-    required=True,
-    help='Device identifier.',
-)
-@click.option(
-    '-b',
-    '--build-id',
-    'buildid',
-    type=str,
-    required=True,
-    help='*OS buildid.',
-)
-@click.option(
-    '-c',
-    '--codename',
-    'codename',
-    type=str,
-    help='*OS codename.',
-)
-@click.option(
-    '-n',
-    '--component',
-    'component',
-    type=str,
-    help='Component to print keys for.',
-)
-@click.option(
-    '-v',
-    '--verbose',
-    'verbose',
-    is_flag=True,
-    default=False,
-    help='Enable verbose logging.',
-)
-def main(
-    buildid: str,
-    device: str,
-    verbose: bool,
-    codename: Optional[str] = None,
-    component: Optional[str] = None,
+def version_callback(val: bool) -> None:
+    if val:
+        print(f'lykos {__version__}')
+        raise typer.Exit()
+
+
+app = AsyncTyper()
+
+
+@app.async_command(context_settings=CONTEXT_SETTINGS)
+async def cli(
+    buildid: Annotated[
+        str, typer.Option('--buildid', '-b', help='*OS buildid.', prompt=True)
+    ],
+    device: Annotated[
+        str, typer.Option('--device', '-d', help='Device identifier.', prompt=True)
+    ],
+    verbose: Annotated[
+        bool, typer.Option('--verbose', '-v', help='Enable verbose logging.')
+    ] = False,
+    codename: Annotated[
+        str | None, typer.Option('--codename', '-c', help='*OS codename.')
+    ] = None,
+    component: Annotated[
+        str | None,
+        typer.Option('--component', '-n', help='Component to print keys for.'),
+    ] = None,
+    version: Annotated[
+        bool | None, typer.Option('--version', callback=version_callback)
+    ] = None,
 ) -> None:
     """A Python CLI tool for fetching *OS firmware keys."""
 
@@ -69,43 +56,47 @@ def main(
     else:
         sys.tracebacklimit = 0
 
-    client = lykos.Client()
-
-    click.echo(
-        f"Searching for{' ' if component is None else ' ' + component.lower() + ' '}keys for ({device},{' ' if codename is None else ' ' + codename + ' '}{buildid})..."
-    )
-
-    try:
-        data = client.get_key_data(device=device, buildid=buildid, codename=codename)
-    except lykos.PageNotFound:
-        raise click.ClickException(
-            f"Failed to fetch keys for ({device},{' ' if codename is None else ' ' + codename + ' '}{buildid})."
+    async with Client() as client:
+        print(
+            f'Searching for{" " if component is None else " " + component.lower() + " "}keys for ({device},{" " if codename is None else " " + codename + " "}{buildid})...'
         )
-    if component:
+
         try:
-            component = next(
-                c for c in data if c.name.casefold() == component.casefold()
+            data = await client.get_key_data(
+                device=device, buildid=buildid, codename=codename
             )
-        except StopIteration:
-            raise click.ClickException(
-                f"No keys found for component {component.lower()} (available keys: {', '.join(c.name for c in data)})."
+        except lykos.PageNotFound:
+            print(
+                f'Failed to fetch keys for ({device},{" " if codename is None else " " + codename + " "}{buildid}).'
             )
+            raise typer.Abort()
 
-        click.echo(f'Component: {component.name}')
-        click.echo(f'File: {component.filename}')
-        click.echo(f'Key: {component.key.hex()}')
-        click.echo(f'IV: {component.iv.hex()}')
+        if component:
+            try:
+                component = next(
+                    c for c in data if c.name.casefold() == component.casefold()
+                )
+            except StopIteration:
+                print(
+                    f'No keys found for component {component.lower()} (available keys: {", ".join(c.name for c in data)}).'
+                )
+                raise typer.Abort()
 
-    else:
-        for comp in data:
-            click.echo(f'Component: {comp.name}')
-            click.echo(f'File: {comp.filename}')
-            click.echo(f'Key: {comp.key.hex()}')
-            click.echo(f'IV: {comp.iv.hex()}')
+            print(f'Component: {component.name}')
+            print(f'File: {component.filename}')
+            print(f'Key: {component.key.hex()}')
+            print(f'IV: {component.iv.hex()}')
 
-            if comp != data[-1]:
-                click.echo()
+        else:
+            for comp in data:
+                print(f'Component: {comp.name}')
+                print(f'File: {comp.filename}')
+                print(f'Key: {comp.key.hex()}')
+                print(f'IV: {comp.iv.hex()}')
+
+                if comp != data[-1]:
+                    print()
 
 
-if __name__ == '__main__':
-    main()
+def main() -> None:
+    asyncio.run(app())

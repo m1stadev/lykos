@@ -1,8 +1,8 @@
 from importlib.metadata import version
 from typing import List, Optional, Tuple
 
+from aiohttp import ClientSession
 from loguru import logger
-from requests import Session
 
 from .errors import PageNotFound
 from .types import Component
@@ -13,22 +13,27 @@ BASE_URL = 'https://theapplewiki.com'
 
 
 class Client:
-    def __init__(self) -> None:
-        self._session = Session()
-        self.components = self._get_component_names()
+    async def __aenter__(self):
+        self._session = ClientSession(base_url=BASE_URL)
+        self.components = await self._get_component_names()
+        return self
 
-    def _get_component_names(self) -> Tuple[str]:
+    async def __aexit__(self, _, __, ___) -> None:
+        await self._session.close()
+
+    async def _get_component_names(self) -> Tuple[str]:
         params = {
             'action': 'templatedata',
             'format': 'json',
-            # Tenmplate:Keys
+            # Template:Keys
             'pageids': '1814',
         }
 
         logger.debug('Fetching component names')
-        data = self._session.get(
-            BASE_URL + '/api.php', headers=HEADERS, params=params
-        ).json()
+        async with self._session.get(
+            '/api.php', headers=HEADERS, params=params
+        ) as resp:
+            data = await resp.json()
 
         components = []
         for k in data['pages']['1814']['paramOrder']:
@@ -47,7 +52,7 @@ class Client:
         )
         return tuple(components)
 
-    def _find_page_title(self, search: str) -> str:
+    async def _find_page_title(self, search: str) -> str:
         params = {
             'action': 'query',
             'format': 'json',
@@ -59,15 +64,17 @@ class Client:
         }
 
         logger.debug(f'Finding page title from search: "{search}"')
-        data = self._session.get(
-            BASE_URL + '/api.php', headers=HEADERS, params=params
-        ).json()
+        async with self._session.get(
+            '/api.php', headers=HEADERS, params=params
+        ) as resp:
+            data = await resp.json()
+
         if data['query']['searchinfo']['totalhits'] == 0:
             raise PageNotFound(f'No pages found from search: "{search}"')
 
         return data['query']['search'][0]['title']
 
-    def _fetch_key_data(self, title: str) -> dict:
+    async def _fetch_key_data(self, title: str) -> dict:
         ask_query = f'[[-Has subobject::{title}]]'
         ask_query += '|?Has filename=filename'
         ask_query += '|?Has key=key'
@@ -81,9 +88,11 @@ class Client:
         }
 
         logger.debug(f'Fetching key data from title: "{title}"')
-        data = self._session.get(
-            BASE_URL + '/api.php', headers=HEADERS, params=params
-        ).json()
+        async with self._session.get(
+            '/api.php', headers=HEADERS, params=params
+        ) as resp:
+            data = await resp.json()
+
         if len(data['query']['results']) == 0:
             raise PageNotFound(f'No wiki pages found from title: "{title}"')
 
@@ -128,7 +137,7 @@ class Client:
         )
         return components
 
-    def get_key_data(
+    async def get_key_data(
         self, device: str, buildid: str, codename: Optional[str] = None
     ) -> List[Component]:
         if codename:
@@ -138,7 +147,7 @@ class Client:
             title = f'Keys:{codename} {buildid} ({device})'
         else:
             logger.info(f'Fetching key data for device: {device}, buildid:{buildid}')
-            title = self._find_page_title(search=f'{device} {buildid}')
+            title = await self._find_page_title(search=f'{device} {buildid}')
 
-        key_data = self._fetch_key_data(title=title)
+        key_data = await self._fetch_key_data(title=title)
         return self._parse_key_data(data=key_data)
