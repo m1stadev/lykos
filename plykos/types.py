@@ -23,7 +23,7 @@ class Firmware:
     identifier: str
     buildid: str
     codename: str
-    components: list[Component]
+    components: tuple[Component]
 
     def __repr__(self) -> str:
         return f'Firmware(id={self.identifier}, buildid={self.buildid}, codename={self.codename}, components={", ".join(c.name for c in self.components)})'
