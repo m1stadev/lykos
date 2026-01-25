@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: PyPI
-      url: https://pypi.org/p/pyimg4
+      url: https://pypi.org/p/plykos
     permissions:
       id-token: write
 
