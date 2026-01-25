@@ -116,7 +116,7 @@ class Client:
                 )
                 name = id_
 
-            if len(value['printouts']['iv']) == 0:
+            if (len(value['printouts']['iv']) == 0) and (name != 'RootFS'):
                 logger.debug(f'No IV found for component: {name}, skipping')
                 continue
 
