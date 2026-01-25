@@ -39,9 +39,5 @@ Options:
 - Local installation:
     - `./install.sh`
 
-## TODO
-- Write documentation
-- Push to PyPI
-
 ## Support
 For any questions/issues you have, [open an issue](https://github.com/m1stadev/plykos/issues).
