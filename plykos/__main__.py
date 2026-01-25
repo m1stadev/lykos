@@ -74,11 +74,13 @@ async def cli(
         if component:
             try:
                 component = next(
-                    c for c in data if c.name.casefold() == component.casefold()
+                    c
+                    for c in data.components
+                    if c.name.casefold() == component.casefold()
                 )
             except StopIteration:
                 print(
-                    f'No keys found for component {component.lower()} (available keys: {", ".join(c.name for c in data)}).'
+                    f'No keys found for component {component.lower()} (available keys: {", ".join(c.name for c in data.components)}).'
                 )
                 raise typer.Abort()
 
@@ -88,13 +90,13 @@ async def cli(
             print(f'IV: {component.iv.hex()}')
 
         else:
-            for comp in data:
+            for comp in data.components:
                 print(f'Component: {comp.name}')
                 print(f'File: {comp.filename}')
                 print(f'Key: {comp.key.hex()}')
                 print(f'IV: {comp.iv.hex()}')
 
-                if comp != data[-1]:
+                if comp != data.components[-1]:
                     print()
 
 

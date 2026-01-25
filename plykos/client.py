@@ -5,7 +5,7 @@ from aiohttp import ClientSession
 from loguru import logger
 
 from .errors import PageNotFound
-from .types import Component
+from .types import Component, Firmware
 
 HEADERS = {'User-Agent': f'plykos/{version(__package__)}'}
 
@@ -139,7 +139,7 @@ class Client:
 
     async def get_key_data(
         self, device: str, buildid: str, codename: Optional[str] = None
-    ) -> List[Component]:
+    ) -> Firmware:
         if codename:
             logger.info(
                 f'Fetching key data for device: {device}, buildid:{buildid}, codename:{codename}'
@@ -150,4 +150,7 @@ class Client:
             title = await self._find_page_title(search=f'{device} {buildid}')
 
         key_data = await self._fetch_key_data(title=title)
-        return self._parse_key_data(data=key_data)
+
+        return Firmware.from_page_title(
+            title=title, components=self._parse_key_data(data=key_data)
+        )
