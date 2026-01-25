@@ -1,0 +1,47 @@
+name: Upload Python Package
+
+on:
+  release:
+    types: published
+
+jobs:
+  build_pkgs:
+    name: Build packages
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install uv and Python 3
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Build packages
+        run: uv build
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: packages
+          path: dist/*
+
+  pypi-publish:
+    name: Upload release to PyPI
+    needs: build_pkgs
+    runs-on: ubuntu-latest
+    environment:
+      name: PyPI
+      url: https://pypi.org/p/pyimg4
+    permissions:
+      id-token: write
+
+    steps:
+      - uses: actions/download-artifact@v6
+        with:
+          name: packages
+          path: dist
+
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
