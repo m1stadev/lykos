@@ -1,5 +1,5 @@
 [project]
-name = "lykos"
+name = "plykos"
 dynamic = ["version"]
 description = "A Python library/CLI tool for fetching *OS firmware keys."
 authors = [
@@ -21,11 +21,11 @@ dev = [
 ]
 
 [project.urls]
-Repository = "https://github.com/m1stadev/lykos"
-"Bug Tracker" = "https://github.com/m1stadev/lykos/issues"
+Repository = "https://github.com/m1stadev/plykos"
+"Bug Tracker" = "https://github.com/m1stadev/plykos/issues"
 
 [project.scripts]
-lykos = "lykos.__main__:main"
+plykos = "plykos.__main__:main"
 
 [build-system]
 requires = ["hatchling", "uv-dynamic-versioning"]

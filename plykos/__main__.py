@@ -6,15 +6,15 @@ import typer
 from async_typer import AsyncTyper
 from loguru import logger
 
-import lykos
-from lykos import Client, __version__
+import plykos
+from plykos import Client, __version__
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
 def version_callback(val: bool) -> None:
     if val:
-        print(f'lykos {__version__}')
+        print(f'plykos {__version__}')
         raise typer.Exit()
 
 
@@ -65,7 +65,7 @@ async def cli(
             data = await client.get_key_data(
                 device=device, buildid=buildid, codename=codename
             )
-        except lykos.PageNotFound:
+        except plykos.PageNotFound:
             print(
                 f'Failed to fetch keys for ({device},{" " if codename is None else " " + codename + " "}{buildid}).'
             )

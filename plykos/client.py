@@ -7,7 +7,7 @@ from loguru import logger
 from .errors import PageNotFound
 from .types import Component
 
-HEADERS = {'User-Agent': f'lykos/{version(__package__)}'}
+HEADERS = {'User-Agent': f'plykos/{version(__package__)}'}
 
 BASE_URL = 'https://theapplewiki.com'
 

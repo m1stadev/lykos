@@ -1,15 +1,15 @@
 <h1 align="center">
-lykos
+plykos
 </h1>
 <p align="center">
-  <a href="https://github.com/m1stadev/lykos/blob/master/LICENSE">
-    <image src="https://img.shields.io/github/license/m1stadev/lykos">
+  <a href="https://github.com/m1stadev/plykos/blob/master/LICENSE">
+    <image src="https://img.shields.io/github/license/m1stadev/plykos">
   </a>
-  <a href="https://github.com/m1stadev/lykos">
-    <image src="https://tokei.rs/b1/github/m1stadev/lykos?category=code&lang=python&style=flat">
+  <a href="https://github.com/m1stadev/plykos">
+    <image src="https://tokei.rs/b1/github/m1stadev/plykos?category=code&lang=python&style=flat">
   </a>
-  <a href="https://github.com/m1stadev/lykos/stargazers">
-    <image src="https://img.shields.io/github/stars/m1stadev/lykos">
+  <a href="https://github.com/m1stadev/plykos/stargazers">
+    <image src="https://img.shields.io/github/stars/m1stadev/plykos">
   </a>
 </p>
 A Python library/CLI tool for fetching *OS firmware keys.
@@ -18,7 +18,7 @@ Utilizes [The Apple Wiki](https://theapplewiki.com) as a source.
 
 ## Usage
 ```
-Usage: lykos [OPTIONS]
+Usage: plykos [OPTIONS]
 
   A Python CLI tool for fetching *OS firmware keys.
 
@@ -33,16 +33,15 @@ Options:
 ```
 
 ## Requirements
-- Python 3.8 or higher
+- Python 3.10 or higher
 
 ## Installation
 - Local installation:
     - `./install.sh`
-    - Requires [Poetry](https://python-poetry.org)
 
 ## TODO
 - Write documentation
 - Push to PyPI
 
 ## Support
-For any questions/issues you have, [open an issue](https://github.com/m1stadev/lykos/issues).
+For any questions/issues you have, [open an issue](https://github.com/m1stadev/plykos/issues).

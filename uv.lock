@@ -339,7 +339,7 @@ wheels = [
 ]
 
 [[package]]
-name = "lykos"
+name = "plykos"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
