@@ -15,7 +15,7 @@ BASE_URL = 'https://theapplewiki.com'
 class Client:
     async def __aenter__(self):
         self._session = ClientSession(base_url=BASE_URL)
-        self.components = await self._get_component_names()
+        self._components = await self._get_component_names()
         return self
 
     async def __aexit__(self, _, __, ___) -> None:
@@ -104,7 +104,7 @@ class Client:
             id_ = key.split('#')[-1]
             logger.debug(f'Finding component name from ID: {id_}')
 
-            for n in self.components:
+            for n in self._components:
                 logger.debug(f'Comparing: {n.casefold()} == {id_.casefold()}')
                 if n.casefold() == id_.casefold():
                     name = n
