@@ -104,3 +104,7 @@ async def cli(
 
 def main() -> None:
     asyncio.run(app())
+
+
+if __name__ == '__main__':
+    main()
