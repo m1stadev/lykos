@@ -79,6 +79,7 @@ class Client:
         ask_query += '|?Has filename=filename'
         ask_query += '|?Has key=key'
         ask_query += '|?Has key IV=iv'
+        ask_query += '|?Has firmware device=model'
 
         params = {
             'action': 'ask',
@@ -102,6 +103,9 @@ class Client:
         components = []
         for key, value in data['query']['results'].items():
             id_ = key.split('#')[-1]
+            if id_.endswith('2'):
+                id_ = id_[:-1]
+
             logger.debug(f'Finding component name from ID: {id_}')
 
             for n in self._components:
@@ -117,6 +121,13 @@ class Client:
                 name = id_
 
             filename = value['printouts']['filename'][0]
+
+            if len(value['printouts']['model']) == 1:
+                model = value['printouts']['model'][0]
+                logger.debug(f'Model: {model} specified for component: {name}')
+            else:
+                model = None
+
             key = bytes.fromhex(value['printouts']['key'][0])
 
             if name == 'RootFS':
@@ -132,7 +143,9 @@ class Client:
 
                 iv = bytes.fromhex(value['printouts']['iv'][0])
 
-            component = Component(name=name, filename=filename, key=key, iv=iv)
+            component = Component(
+                name=name, filename=filename, model=model, key=key, iv=iv
+            )
             logger.debug(f'Found component: {component}')
             components.append(component)
 

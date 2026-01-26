@@ -86,6 +86,8 @@ async def cli(
 
             print(f'Component: {component.name}')
             print(f'File: {component.filename}')
+            if component.model is not None:
+                print(f'Model: {component.model}')
             print(f'Key: {component.key.hex()}')
             if component.iv is not None:
                 print(f'IV: {component.iv.hex()}')
@@ -94,6 +96,8 @@ async def cli(
             for comp in data.components:
                 print(f'Component: {comp.name}')
                 print(f'File: {comp.filename}')
+                if comp.model is not None:
+                    print(f'Model: {comp.model}')
                 print(f'Key: {comp.key.hex()}')
                 if comp.iv is not None:
                     print(f'IV: {comp.iv.hex()}')

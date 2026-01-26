@@ -11,19 +11,25 @@ _PAGE_TITLE_REGEX = compile(
 class Component:
     name: str
     filename: str
+    model: str | None
     key: bytes
     iv: bytes | None
 
     def __repr__(self) -> str:
-        _repr = (
-            f'Component(name={self.name}, file={self.filename}, key={self.key.hex()}'
-        )
-        if self.iv is None:
-            end = ')'
-        else:
-            end = f', iv={self.iv.hex()})'
+        _repr = {
+            'name': self.name,
+            'file': self.filename,
+            'model': self.model,
+            'key': self.key.hex(),
+        }
 
-        return _repr + end
+        if self.iv is not None:
+            _repr['iv'] = self.iv.hex()
+
+        if self.model is None:
+            del _repr['model']
+
+        return f"Component({', '.join(f'{k}={v}' for k, v in _repr.items())})"
 
 
 @dataclass(frozen=True)
