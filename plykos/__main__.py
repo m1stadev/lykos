@@ -87,14 +87,16 @@ async def cli(
             print(f'Component: {component.name}')
             print(f'File: {component.filename}')
             print(f'Key: {component.key.hex()}')
-            print(f'IV: {component.iv.hex()}')
+            if component.iv is not None:
+                print(f'IV: {component.iv.hex()}')
 
         else:
             for comp in data.components:
                 print(f'Component: {comp.name}')
                 print(f'File: {comp.filename}')
                 print(f'Key: {comp.key.hex()}')
-                print(f'IV: {comp.iv.hex()}')
+                if comp.iv is not None:
+                    print(f'IV: {comp.iv.hex()}')
 
                 if comp != data.components[-1]:
                     print()

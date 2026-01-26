@@ -12,10 +12,18 @@ class Component:
     name: str
     filename: str
     key: bytes
-    iv: bytes
+    iv: bytes | None
 
     def __repr__(self) -> str:
-        return f'Component(name={self.name}, file={self.filename}, key={self.key.hex()}, iv={self.iv.hex()})'
+        _repr = (
+            f'Component(name={self.name}, file={self.filename}, key={self.key.hex()}'
+        )
+        if self.iv is None:
+            end = ')'
+        else:
+            end = f', iv={self.iv.hex()})'
+
+        return _repr + end
 
 
 @dataclass(frozen=True)

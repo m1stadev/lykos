@@ -116,17 +116,21 @@ class Client:
                 )
                 name = id_
 
-            if (len(value['printouts']['iv']) == 0) and (name != 'RootFS'):
-                logger.debug(f'No IV found for component: {name}, skipping')
-                continue
-
-            if value['printouts']['iv'][0] in ('Not Encrypted', 'Unknown'):
-                logger.debug(f'Component: {name} is not encrypted, skipping')
-                continue
-
             filename = value['printouts']['filename'][0]
             key = bytes.fromhex(value['printouts']['key'][0])
-            iv = bytes.fromhex(value['printouts']['iv'][0])
+
+            if name == 'RootFS':
+                iv = None
+            else:
+                if len(value['printouts']['iv']) == 0:
+                    logger.debug(f'No IV found for component: {name}, skipping')
+                    continue
+
+                if value['printouts']['iv'][0] in ('Not Encrypted', 'Unknown'):
+                    logger.debug(f'Component: {name} is not encrypted, skipping')
+                    continue
+
+                iv = bytes.fromhex(value['printouts']['iv'][0])
 
             component = Component(name=name, filename=filename, key=key, iv=iv)
             logger.debug(f'Found component: {component}')
