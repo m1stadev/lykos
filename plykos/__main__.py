@@ -9,19 +9,17 @@ from loguru import logger
 import plykos
 from plykos import Client, __version__
 
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
-
-def version_callback(val: bool) -> None:
+def _version_callback(val: bool) -> None:
     if val:
-        print(f'plykos {__version__}')
+        print(' '.join(__package__, __version__))
         raise typer.Exit()
 
 
 app = AsyncTyper()
 
 
-@app.async_command(context_settings=CONTEXT_SETTINGS)
+@app.async_command(context_settings={'help_option_names': ['-h', '--help']})
 async def cli(
     buildid: Annotated[
         str, typer.Option('--buildid', '-b', help='*OS buildid.', prompt=True)
@@ -40,7 +38,7 @@ async def cli(
         typer.Option('--component', '-n', help='Component to print keys for.'),
     ] = None,
     version: Annotated[
-        bool | None, typer.Option('--version', callback=version_callback)
+        bool | None, typer.Option('--version', callback=_version_callback)
     ] = None,
 ) -> None:
     """A Python CLI tool for fetching *OS firmware keys."""
