@@ -1,5 +1,4 @@
 from importlib.metadata import version
-from typing import List, Optional, Tuple
 
 from aiohttp import ClientSession
 from loguru import logger
@@ -21,7 +20,7 @@ class Client:
     async def __aexit__(self, _, __, ___) -> None:
         await self._session.close()
 
-    async def _get_component_names(self) -> Tuple[str]:
+    async def _get_component_names(self) -> tuple[str]:
         params = {
             'action': 'templatedata',
             'format': 'json',
@@ -99,12 +98,11 @@ class Client:
 
         return data
 
-    def _parse_key_data(self, data: dict) -> List[Component]:
+    def _parse_key_data(self, data: dict) -> list[Component]:
         components = []
         for key, value in data['query']['results'].items():
             id_ = key.split('#')[-1]
-            if id_.endswith('2'):
-                id_ = id_[:-1]
+            id_ = id_.removesuffix('2')
 
             logger.debug(f'Finding component name from ID: {id_}')
 
@@ -155,7 +153,7 @@ class Client:
         return components
 
     async def get_key_data(
-        self, device: str, buildid: str, codename: Optional[str] = None
+        self, device: str, buildid: str, codename: str | None = None
     ) -> Firmware:
         if codename:
             logger.info(
